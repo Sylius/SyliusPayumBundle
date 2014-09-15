@@ -13,7 +13,7 @@ namespace Sylius\Bundle\PayumBundle\Payum\Paypal\Action;
 
 use Payum\Core\Security\TokenInterface;
 use Sylius\Bundle\PayumBundle\Payum\Action\AbstractCapturePaymentAction;
-use Sylius\Component\Core\Model\PaymentInterface;
+use Sylius\Bundle\PayumBundle\Model\PaymentInterface;
 use Payum\Core\Security\GenericTokenFactoryInterface;
 
 class CapturePaymentUsingExpressCheckoutAction extends AbstractCapturePaymentAction

@@ -14,7 +14,7 @@ namespace Sylius\Bundle\PayumBundle\Payum\Be2bill\Action;
 use Payum\Core\Exception\LogicException;
 use Payum\Core\Security\TokenInterface;
 use Sylius\Bundle\PayumBundle\Payum\Action\AbstractCapturePaymentAction;
-use Sylius\Component\Core\Model\PaymentInterface;
+use Sylius\Bundle\PayumBundle\Model\PaymentInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

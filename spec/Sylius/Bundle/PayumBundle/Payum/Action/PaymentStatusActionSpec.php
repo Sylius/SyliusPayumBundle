@@ -14,7 +14,7 @@ namespace spec\Sylius\Bundle\PayumBundle\Payum\Action;
 use Payum\Core\PaymentInterface as PayumPaymentInterface;
 use Payum\Core\Request\StatusRequestInterface;
 use PhpSpec\ObjectBehavior;
-use Sylius\Component\Core\Model\PaymentInterface;
+use Sylius\Bundle\PayumBundle\Model\PaymentInterface;
 
 class PaymentStatusActionSpec extends ObjectBehavior
 {
