@@ -15,7 +15,7 @@ use Payum\Core\Security\SensitiveValue;
 use Payum\Core\Security\TokenInterface;
 use Sylius\Bundle\PayumBundle\Payum\Action\AbstractCapturePaymentAction;
 use Sylius\Bundle\PayumBundle\Payum\Request\ObtainCreditCardRequest;
-use Sylius\Component\Core\Model\PaymentInterface;
+use Sylius\Bundle\PayumBundle\Model\PaymentInterface;
 use Sylius\Component\Currency\Converter\CurrencyConverterInterface;
 
 class CapturePaymentUsingCreditCardAction extends AbstractCapturePaymentAction
