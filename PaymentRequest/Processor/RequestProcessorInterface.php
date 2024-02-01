@@ -21,6 +21,6 @@ interface RequestProcessorInterface
     public function process(
         PaymentRequestInterface $paymentRequest,
         TokenAggregateInterface $request,
-        string $gatewayName
+        string $gatewayName,
     ): void;
 }
