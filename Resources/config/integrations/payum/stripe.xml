@@ -16,15 +16,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services
                                http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <imports>
-        <import resource="services/**.xml" />
-    </imports>
-
     <services>
         <defaults public="true" />
 
-        <service id="sylius.payum.http_client" class="Sylius\Bundle\PayumBundle\HttpClient\HttpClient">
-            <argument type="service" id="Psr\Http\Client\ClientInterface" />
+        <service id="sylius.form.type.gateway_configuration.stripe" class="Sylius\Bundle\PayumBundle\Form\Type\StripeGatewayConfigurationType">
+            <tag name="sylius.gateway_configuration_type" type="stripe_checkout" label="sylius.payum_gateway_factory.stripe_checkout" priority="50" />
+            <tag name="form.type" />
         </service>
     </services>
 </container>
