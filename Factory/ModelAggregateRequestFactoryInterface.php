@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace Sylius\Bundle\PayumBundle\Tests\Stub;
+namespace Sylius\Bundle\PayumBundle\Factory;
 
-use Sylius\Bundle\PayumBundle\Attribute\AsGatewayConfigurationType;
+use Payum\Core\Model\ModelAggregateInterface;
 
-#[AsGatewayConfigurationType(type: 'test', label: 'Test', priority: 15)]
-final class GatewayConfigurationTypeStub
+interface ModelAggregateRequestFactoryInterface
 {
+    public function createNewWithModel(mixed $model): ModelAggregateInterface;
 }
