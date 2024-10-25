@@ -17,6 +17,7 @@ use Payum\Core\Payum;
 use Payum\Core\Security\TokenInterface;
 use Sylius\Bundle\CoreBundle\OrderPay\Provider\PayResponseProviderInterface;
 use Sylius\Bundle\CoreBundle\OrderPay\Resolver\PaymentToPayResolverInterface;
+use Sylius\Bundle\PayumBundle\Model\GatewayConfigInterface as PayumGatewayConfigInterface;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
@@ -66,9 +67,11 @@ final class PayumPayResponseProvider implements PayResponseProviderInterface
             return false;
         }
 
-        $gatewayName = $gatewayConfig->getGatewayName() ?? '';
+        if (!$gatewayConfig instanceof PayumGatewayConfigInterface) {
+            return false;
+        }
 
-        return isset($this->payum->getGateways()[$gatewayName]);
+        return $gatewayConfig->getUsePayum();
     }
 
     /**
