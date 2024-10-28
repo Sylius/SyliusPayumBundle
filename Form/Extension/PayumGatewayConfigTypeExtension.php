@@ -48,7 +48,7 @@ final class PayumGatewayConfigTypeExtension extends AbstractTypeExtension
                 // Check if a Payum factory exists
                 $supportPayum = isset($this->payum->getGatewayFactories()[$factoryName]);
 
-                if(!$supportPayum) {
+                if (!$supportPayum) {
                     $gatewayConfig->setUsePayum(false);
                 }
 
