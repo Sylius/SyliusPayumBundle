@@ -16,7 +16,6 @@ namespace Sylius\Bundle\PayumBundle\Form\Extension;
 use Payum\Core\Security\CypherInterface;
 use Sylius\Bundle\PaymentBundle\Form\Type\GatewayConfigType;
 use Sylius\Bundle\PayumBundle\Checker\PayumGatewayConfigEncryptionCheckerInterface;
-use Sylius\Bundle\PayumBundle\Model\GatewayConfigInterface;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -40,7 +39,7 @@ final class CryptedGatewayConfigTypeExtension extends AbstractTypeExtension
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $gatewayConfig = $event->getData();
 
-                if (false === $this->encryptionChecker->isPayumEncryptionEnabled($gatewayConfig)) {
+                if (!$this->encryptionChecker->isPayumEncryptionEnabled($gatewayConfig)) {
                     return;
                 }
 
@@ -51,7 +50,7 @@ final class CryptedGatewayConfigTypeExtension extends AbstractTypeExtension
             ->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
                 $gatewayConfig = $event->getData();
 
-                if (false === $this->encryptionChecker->isPayumEncryptionEnabled($gatewayConfig)) {
+                if (!$this->encryptionChecker->isPayumEncryptionEnabled($gatewayConfig)) {
                     return;
                 }
 

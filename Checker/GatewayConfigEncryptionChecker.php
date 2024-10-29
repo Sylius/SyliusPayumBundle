@@ -13,19 +13,24 @@ declare(strict_types=1);
 
 namespace Sylius\Bundle\PayumBundle\Checker;
 
-use Payum\Core\Security\CryptedInterface;
 use Sylius\Bundle\PayumBundle\Model\GatewayConfigInterface;
+use Sylius\Bundle\PaymentBundle\Checker\GatewayConfigEncryptionCheckerInterface;
 use Sylius\Component\Payment\Model\GatewayConfigInterface as BaseGatewayConfigInterface;
 
 /** @experimental */
-final readonly class PayumGatewayConfigEncryptionChecker implements PayumGatewayConfigEncryptionCheckerInterface
+final readonly class GatewayConfigEncryptionChecker implements GatewayConfigEncryptionCheckerInterface
 {
+    public function __construct(
+        private GatewayConfigEncryptionCheckerInterface $decorated,
+    ) {
+    }
+
     /** @param GatewayConfigInterface $gatewayConfig */
-    public function isPayumEncryptionEnabled(BaseGatewayConfigInterface $gatewayConfig): bool
+    public function isEncryptionEnabled(BaseGatewayConfigInterface $gatewayConfig): bool
     {
         return
-            $gatewayConfig instanceof CryptedInterface &&
-            $gatewayConfig->getUsePayum()
+            $this->decorated->isEncryptionEnabled($gatewayConfig) &&
+            !$gatewayConfig->getUsePayum()
         ;
     }
 }
