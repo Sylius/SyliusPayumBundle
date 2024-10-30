@@ -32,7 +32,7 @@ final class GatewayConfigEncryptionCheckerTest extends TestCase
     }
 
     /** @test */
-    public function it_cannot_encrypt_when_gateway_config_use_payum(): void
+    public function it_cannot_encrypt_when_gateway_config_uses_payum(): void
     {
         $gatewayConfig = $this->createMock(GatewayConfigInterface::class);
         $gatewayConfig->method('getUsePayum')->willReturn(true);
