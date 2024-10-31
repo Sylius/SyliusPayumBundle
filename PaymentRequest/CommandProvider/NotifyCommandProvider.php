@@ -27,6 +27,6 @@ final class NotifyCommandProvider implements PaymentRequestCommandProviderInterf
 
     public function provide(PaymentRequestInterface $paymentRequest): object
     {
-        return new NotifyPaymentRequest($paymentRequest->getHash()?->toBinary());
+        return new NotifyPaymentRequest($paymentRequest->getId());
     }
 }
