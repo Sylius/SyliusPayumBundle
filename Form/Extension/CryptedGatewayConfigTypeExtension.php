@@ -16,7 +16,6 @@ namespace Sylius\Bundle\PayumBundle\Form\Extension;
 use Payum\Core\Security\CypherInterface;
 use Sylius\Bundle\PaymentBundle\Form\Type\GatewayConfigType;
 use Sylius\Bundle\PayumBundle\Checker\PayumGatewayConfigEncryptionCheckerInterface;
-use Sylius\Bundle\PayumBundle\Model\GatewayConfigInterface;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
