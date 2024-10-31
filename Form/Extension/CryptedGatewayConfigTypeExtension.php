@@ -39,7 +39,7 @@ final class CryptedGatewayConfigTypeExtension extends AbstractTypeExtension
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $gatewayConfig = $event->getData();
 
-                if (false === $this->encryptionChecker->isPayumEncryptionEnabled($gatewayConfig)) {
+                if (!$this->encryptionChecker->isPayumEncryptionEnabled($gatewayConfig)) {
                     return;
                 }
 
@@ -50,7 +50,7 @@ final class CryptedGatewayConfigTypeExtension extends AbstractTypeExtension
             ->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
                 $gatewayConfig = $event->getData();
 
-                if (false === $this->encryptionChecker->isPayumEncryptionEnabled($gatewayConfig)) {
+                if (!$this->encryptionChecker->isPayumEncryptionEnabled($gatewayConfig)) {
                     return;
                 }
 

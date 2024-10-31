@@ -58,7 +58,7 @@ final class PayumGatewayConfigTypeExtension extends AbstractTypeExtension
                 $event->getForm()->add('usePayum', CheckboxType::class, [
                     'required' => false,
                     'label' => 'sylius.form.gateway_config.use_payum',
-                    'disabled' => !($supportPayum && $supportPaymentRequest),
+                    'disabled' => !($supportPayum && $supportPaymentRequest) || null !== $gatewayConfig->getId(),
                 ]);
 
                 $event->setData($gatewayConfig);
