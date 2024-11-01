@@ -20,6 +20,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * @internal
+ *
  * @experimental
  */
 final class ConditionalGatewayConfigEncryptionCheckerDecoratorPass implements CompilerPassInterface

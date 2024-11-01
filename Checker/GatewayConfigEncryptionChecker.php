@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sylius\Bundle\PayumBundle\Checker;
 
-use Sylius\Bundle\PayumBundle\Model\GatewayConfigInterface;
 use Sylius\Bundle\PaymentBundle\Checker\GatewayConfigEncryptionCheckerInterface;
+use Sylius\Bundle\PayumBundle\Model\GatewayConfigInterface;
 use Sylius\Component\Payment\Model\GatewayConfigInterface as BaseGatewayConfigInterface;
 
 /** @experimental */
