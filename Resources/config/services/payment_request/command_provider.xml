@@ -19,7 +19,7 @@
     <services>
         <service id="sylius_payum.command_provider.payment_request.offline" class="Sylius\Bundle\PayumBundle\PaymentRequest\CommandProvider\PayumActionsCommandProvider">
             <argument type="tagged_locator" tag="sylius_payum.command_provider.payment_request.offline" index-by="action" />
-            <tag name="sylius.payment_request.command_provider" gateway-factory="offline" priority="100" />
+            <tag name="sylius.payment_request.command_provider" gateway-factory="offline" priority="-100" />
         </service>
 
         <service id="sylius_payum.command_provider.payment_request.offline.capture" class="Sylius\Bundle\PayumBundle\PaymentRequest\CommandProvider\CaptureCommandProvider">
