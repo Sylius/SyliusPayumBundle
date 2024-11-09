@@ -14,8 +14,10 @@ use Symfony\Contracts\Service\ServiceProviderInterface;
 final class PayumActionsCommandProvider extends AbstractServiceCommandProvider
 {
     /** @param ServiceProviderInterface<PaymentRequestCommandProviderInterface> $locator */
-    public function __construct(protected ServiceProviderInterface $locator)
-    {
+    public function __construct(
+        private AbstractServiceCommandProvider $decoratedActionsCommandProvider,
+        protected ServiceProviderInterface $locator,
+    ) {
     }
 
     protected function getCommandProviderIndex(PaymentRequestInterface $paymentRequest): string
@@ -23,14 +25,13 @@ final class PayumActionsCommandProvider extends AbstractServiceCommandProvider
         return $paymentRequest->getAction();
     }
 
-    public function supports(PaymentRequestInterface $paymentRequest): bool
+    public function provide(PaymentRequestInterface $paymentRequest): object
     {
         /** @var GatewayConfigInterface|null $gatewayConfig */
         $gatewayConfig = $paymentRequest->getMethod()->getGatewayConfig();
-        if (false === ($gatewayConfig?->getUsePayum() ?? false)) {
-            return false;
-        }
 
-        return parent::supports($paymentRequest);
+        return $gatewayConfig?->getUsePayum() ?? true
+            ? parent::provide($paymentRequest)
+            : $this->decoratedActionsCommandProvider->provide($paymentRequest);
     }
 }
