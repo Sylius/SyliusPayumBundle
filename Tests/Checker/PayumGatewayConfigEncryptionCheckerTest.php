@@ -20,7 +20,7 @@ use Sylius\Component\Payment\Model\GatewayConfigInterface as BaseGatewayConfigIn
 
 final class PayumGatewayConfigEncryptionCheckerTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_cannot_detect_encrypt_if_gateway_config_does_not_implement_crypted_interface(): void
     {
         $gatewayConfig = $this->createMock(BaseGatewayConfigInterface::class);
@@ -29,7 +29,7 @@ final class PayumGatewayConfigEncryptionCheckerTest extends TestCase
         $this->assertFalse($checker->isPayumEncryptionEnabled($gatewayConfig));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_cannot_encrypt_if_gateway_config_does_not_use_payum(): void
     {
         $gatewayConfig = $this->createMock(GatewayConfigInterface::class);
@@ -39,7 +39,7 @@ final class PayumGatewayConfigEncryptionCheckerTest extends TestCase
         $this->assertFalse($checker->isPayumEncryptionEnabled($gatewayConfig));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_encrypt_if_gateway_config_uses_payum(): void
     {
         $gatewayConfig = $this->createMock(GatewayConfigInterface::class);

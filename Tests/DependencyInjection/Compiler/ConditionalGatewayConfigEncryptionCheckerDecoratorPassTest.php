@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class ConditionalGatewayConfigEncryptionCheckerDecoratorPassTest extends AbstractCompilerPassTestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_registers_gateway_config_encryption_checker_decorator_if_checker_service_exists(): void
     {
         $this->setDefinition('sylius.checker.gateway_config_encryption', new Definition());
@@ -31,7 +31,7 @@ final class ConditionalGatewayConfigEncryptionCheckerDecoratorPassTest extends A
         $this->assertContainerBuilderHasServiceDefinitionWithArgument('sylius_payum.checker.gateway_config_encryption', 0, new Reference('.inner'));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_does_not_register_gateway_config_encryption_checker_decorator_if_checker_service_does_not_exist(): void
     {
         $this->compile();
