@@ -30,29 +30,29 @@ final class CapturePaymentActionTest extends TestCase
 
     private CapturePaymentAction $capturePaymentAction;
 
+    private Capture&MockObject $capture;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->paymentDescriptionProvider = $this->createMock(PaymentDescriptionProviderInterface::class);
         $this->capturePaymentAction = new CapturePaymentAction($this->paymentDescriptionProvider);
+        $this->capture = $this->createMock(Capture::class);
     }
 
     public function testThrowExceptionWhenUnsupportedRequest(): void
     {
-        /** @var Capture&MockObject $capture */
-        $capture = $this->createMock(Capture::class);
+        $this->capture->method('getModel')->willReturn(new \stdClass());
 
         self::expectException(RequestNotSupportedException::class);
 
-        $this->capturePaymentAction->execute($capture);
+        $this->capturePaymentAction->execute($this->capture);
     }
 
     public function testPerformBasicCapture(): void
     {
         /** @var GatewayInterface&MockObject $gateway */
         $gateway = $this->createMock(GatewayInterface::class);
-        /** @var Capture&MockObject $capture */
-        $capture = $this->createMock(Capture::class);
         /** @var PaymentInterface&MockObject $payment */
         $payment = $this->createMock(PaymentInterface::class);
         /** @var OrderInterface&MockObject $order */
@@ -64,12 +64,12 @@ final class CapturePaymentActionTest extends TestCase
 
         $payment->expects(self::once())->method('getDetails')->willReturn([]);
 
-        $capture->expects($this->any())->method('getModel')->willReturn($payment);
+        $this->capture->expects(self::any())->method('getModel')->willReturn($payment);
 
         $payment->expects(self::once())->method('setDetails')->with([]);
 
-        $capture->expects(self::once())->method('setModel')->with(new ArrayObject());
+        $this->capture->expects(self::once())->method('setModel')->with(new ArrayObject());
 
-        $this->capturePaymentAction->execute($capture);
+        $this->capturePaymentAction->execute($this->capture);
     }
 }

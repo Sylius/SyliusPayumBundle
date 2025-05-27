@@ -27,10 +27,16 @@ final class ConvertPaymentActionTest extends TestCase
 {
     private ConvertPaymentAction $convertPaymentAction;
 
+    private MockObject&PaymentInterface $payment;
+
+    private Convert&MockObject $request;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->convertPaymentAction = new ConvertPaymentAction();
+        $this->payment = $this->createMock(PaymentInterface::class);
+        $this->request = $this->createMock(Convert::class);
     }
 
     public function testPayumAction(): void
@@ -40,32 +46,27 @@ final class ConvertPaymentActionTest extends TestCase
 
     public function testConvertsPaymentToOfflineAction(): void
     {
-        /** @var Convert&MockObject $request */
-        $request = $this->createMock(Convert::class);
-        /** @var PaymentInterface&MockObject $payment */
-        $payment = $this->createMock(PaymentInterface::class);
+        $this->request->expects(self::once())->method('getTo')->willReturn('array');
 
-        $request->expects(self::once())->method('getTo')->willReturn('array');
-        $request->expects(self::once())->method('getSource')->willReturn($payment);
-        $request->expects(self::once())->method('setResult')->with([
+        $this->request->expects(self::once())->method('getSource')->willReturn($this->payment);
+
+        $this->request->expects(self::once())->method('setResult')->with([
             Constants::FIELD_PAID => false,
         ]);
-        $this->convertPaymentAction->execute($request);
+
+        $this->convertPaymentAction->execute($this->request);
     }
 
     public function testSupportsOnlyConvertRequest(): void
     {
-        /** @var Convert&MockObject $convertRequest */
-        $convertRequest = $this->createMock(Convert::class);
         /** @var Capture&MockObject $captureRequest */
         $captureRequest = $this->createMock(Capture::class);
-        /** @var PaymentInterface&MockObject $payment */
-        $payment = $this->createMock(PaymentInterface::class);
 
-        $convertRequest->expects(self::once())->method('getTo')->willReturn('array');
-        $convertRequest->expects(self::once())->method('getSource')->willReturn($payment);
+        $this->request->expects(self::once())->method('getTo')->willReturn('array');
 
-        self::assertTrue($this->convertPaymentAction->supports($convertRequest));
+        $this->request->expects(self::once())->method('getSource')->willReturn($this->payment);
+
+        self::assertTrue($this->convertPaymentAction->supports($this->request));
         self::assertFalse($this->convertPaymentAction->supports($captureRequest));
     }
 
@@ -75,8 +76,6 @@ final class ConvertPaymentActionTest extends TestCase
         $fromSomethingElseToSomethingElseRequest = $this->createMock(Convert::class);
         /** @var Convert&MockObject $fromPaymentToArrayRequest */
         $fromPaymentToArrayRequest = $this->createMock(Convert::class);
-        /** @var PaymentInterface&MockObject $payment */
-        $payment = $this->createMock(PaymentInterface::class);
         /** @var PaymentMethodInterface&MockObject $method */
         $method = $this->createMock(PaymentMethodInterface::class);
 
@@ -85,7 +84,7 @@ final class ConvertPaymentActionTest extends TestCase
             ->willReturn('array');
         $fromPaymentToArrayRequest
             ->method('getSource')
-            ->willReturn($payment);
+            ->willReturn($this->payment);
 
         $fromSomethingElseToSomethingElseRequest
             ->method('getTo')

@@ -30,29 +30,29 @@ final class AuthorizePaymentActionTest extends TestCase
 
     private AuthorizePaymentAction $authorizePaymentAction;
 
+    private Authorize&MockObject $authorize;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->paymentDescriptionProvider = $this->createMock(PaymentDescriptionProviderInterface::class);
         $this->authorizePaymentAction = new AuthorizePaymentAction($this->paymentDescriptionProvider);
+        $this->authorize = $this->createMock(Authorize::class);
     }
 
     public function testThrowExceptionWhenUnsupportedRequest(): void
     {
-        /** @var Authorize&MockObject $authorize */
-        $authorize = $this->createMock(Authorize::class);
+        $this->authorize->method('getModel')->willReturn(new \stdClass());
 
         self::expectException(RequestNotSupportedException::class);
 
-        $this->authorizePaymentAction->execute($authorize);
+        $this->authorizePaymentAction->execute($this->authorize);
     }
 
     public function testPerformBasicAuthorize(): void
     {
         /** @var GatewayInterface&MockObject $gateway */
         $gateway = $this->createMock(GatewayInterface::class);
-        /** @var Authorize&MockObject $authorize */
-        $authorize = $this->createMock(Authorize::class);
         /** @var PaymentInterface&MockObject $payment */
         $payment = $this->createMock(PaymentInterface::class);
         /** @var OrderInterface&MockObject $order */
@@ -64,12 +64,12 @@ final class AuthorizePaymentActionTest extends TestCase
 
         $payment->expects(self::once())->method('getDetails')->willReturn([]);
 
-        $authorize->expects($this->any())->method('getModel')->willReturn($payment);
+        $this->authorize->expects(self::any())->method('getModel')->willReturn($payment);
 
         $payment->expects(self::once())->method('setDetails')->with([]);
 
-        $authorize->expects(self::once())->method('setModel')->with(new ArrayObject());
+        $this->authorize->expects(self::once())->method('setModel')->with(new ArrayObject());
 
-        $this->authorizePaymentAction->execute($authorize);
+        $this->authorizePaymentAction->execute($this->authorize);
     }
 }

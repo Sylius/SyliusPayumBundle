@@ -25,10 +25,19 @@ final class ResolveNextRouteActionTest extends TestCase
 {
     private ResolveNextRouteAction $resolveNextRouteAction;
 
+    private MockObject&ResolveNextRoute $resolveNextRouteRequest;
+
+    private MockObject&PaymentInterface $payment;
+
+    private MockObject&OrderInterface $order;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->resolveNextRouteAction = new ResolveNextRouteAction();
+        $this->resolveNextRouteRequest = $this->createMock(ResolveNextRoute::class);
+        $this->payment = $this->createMock(PaymentInterface::class);
+        $this->order = $this->createMock(OrderInterface::class);
     }
 
     public function testAPayumAction(): void
@@ -38,135 +47,110 @@ final class ResolveNextRouteActionTest extends TestCase
 
     public function testResolvesNextRouteForCompletedPayment(): void
     {
-        /** @var ResolveNextRoute&MockObject $resolveNextRouteRequest */
-        $resolveNextRouteRequest = $this->createMock(ResolveNextRoute::class);
-        /** @var PaymentInterface&MockObject $payment */
-        $payment = $this->createMock(PaymentInterface::class);
+        $this->resolveNextRouteRequest->expects(self::once())
+            ->method('getFirstModel')
+            ->willReturn($this->payment);
 
-        $resolveNextRouteRequest->expects(self::once())->method('getFirstModel')->willReturn($payment);
-
-        $payment->expects(self::once())
+        $this->payment->expects(self::once())
             ->method('getState')
             ->willReturn(PaymentInterface::STATE_COMPLETED);
 
-        $resolveNextRouteRequest->expects(self::once())
+        $this->resolveNextRouteRequest->expects(self::once())
             ->method('setRouteName')
             ->with('sylius_shop_order_thank_you');
 
-        $this->resolveNextRouteAction->execute($resolveNextRouteRequest);
+        $this->resolveNextRouteAction->execute($this->resolveNextRouteRequest);
     }
 
     public function testResolvesNextRouteForCancelledPayment(): void
     {
-        /** @var ResolveNextRoute&MockObject $resolveNextRouteRequest */
-        $resolveNextRouteRequest = $this->createMock(ResolveNextRoute::class);
-        /** @var PaymentInterface&MockObject $payment */
-        $payment = $this->createMock(PaymentInterface::class);
-        /** @var OrderInterface&MockObject $order */
-        $order = $this->createMock(OrderInterface::class);
+        $this->resolveNextRouteRequest->expects(self::once())
+            ->method('getFirstModel')
+            ->willReturn($this->payment);
 
-        $resolveNextRouteRequest->expects(self::once())->method('getFirstModel')->willReturn($payment);
+        $this->payment->method('getState')->willReturn(PaymentInterface::STATE_CANCELLED);
 
-        $payment->method('getState')->willReturn(PaymentInterface::STATE_CANCELLED);
+        $this->payment->expects(self::once())->method('getOrder')->willReturn($this->order);
 
-        $payment->expects(self::once())->method('getOrder')->willReturn($order);
+        $this->order->expects(self::once())->method('getTokenValue')->willReturn('qwerty');
 
-        $order->expects(self::once())->method('getTokenValue')->willReturn('qwerty');
-
-        $resolveNextRouteRequest->expects(self::once())
+        $this->resolveNextRouteRequest->expects(self::once())
             ->method('setRouteName')
             ->with('sylius_shop_order_show');
 
-        $resolveNextRouteRequest->expects(self::once())
+        $this->resolveNextRouteRequest->expects(self::once())
             ->method('setRouteParameters')
             ->with(['tokenValue' => 'qwerty']);
 
-        $this->resolveNextRouteAction->execute($resolveNextRouteRequest);
+        $this->resolveNextRouteAction->execute($this->resolveNextRouteRequest);
     }
 
     public function testResolvesNextRouteForPaymentInCartState(): void
     {
-        /** @var ResolveNextRoute&MockObject $resolveNextRouteRequestMock */
-        $resolveNextRouteRequestMock = $this->createMock(ResolveNextRoute::class);
-        /** @var PaymentInterface&MockObject $paymentMock */
-        $paymentMock = $this->createMock(PaymentInterface::class);
-        /** @var OrderInterface&MockObject $orderMock */
-        $orderMock = $this->createMock(OrderInterface::class);
-
-        $resolveNextRouteRequestMock->expects(self::once())
+        $this->resolveNextRouteRequest->expects(self::once())
             ->method('getFirstModel')
-            ->willReturn($paymentMock);
+            ->willReturn($this->payment);
 
-        $paymentMock->method('getState')->willReturn(PaymentInterface::STATE_CART);
+        $this->payment->method('getState')->willReturn(PaymentInterface::STATE_CART);
 
-        $paymentMock->expects(self::once())->method('getOrder')->willReturn($orderMock);
+        $this->payment->expects(self::once())->method('getOrder')->willReturn($this->order);
 
-        $orderMock->expects(self::once())->method('getTokenValue')->willReturn('qwerty');
+        $this->order->expects(self::once())->method('getTokenValue')->willReturn('qwerty');
 
-        $resolveNextRouteRequestMock->expects(self::once())
+        $this->resolveNextRouteRequest->expects(self::once())
             ->method('setRouteName')
             ->with('sylius_shop_order_show');
 
-        $resolveNextRouteRequestMock->expects(self::once())
+        $this->resolveNextRouteRequest->expects(self::once())
             ->method('setRouteParameters')
             ->with(['tokenValue' => 'qwerty']);
 
-        $this->resolveNextRouteAction->execute($resolveNextRouteRequestMock);
+        $this->resolveNextRouteAction->execute($this->resolveNextRouteRequest);
     }
 
-    public function testResolvesNextRouteForFaildPayment(): void
+    public function testResolvesNextRouteForFailedPayment(): void
     {
-        /** @var ResolveNextRoute&MockObject $resolveNextRouteRequest */
-        $resolveNextRouteRequest = $this->createMock(ResolveNextRoute::class);
-        /** @var PaymentInterface&MockObject $payment */
-        $payment = $this->createMock(PaymentInterface::class);
-        /** @var OrderInterface&MockObject $order */
-        $order = $this->createMock(OrderInterface::class);
+        $this->resolveNextRouteRequest->expects(self::once())
+            ->method('getFirstModel')
+            ->willReturn($this->payment);
 
-        $resolveNextRouteRequest->expects(self::once())->method('getFirstModel')->willReturn($payment);
+        $this->payment->method('getState')->willReturn(PaymentInterface::STATE_FAILED);
 
-        $payment->method('getState')->willReturn(PaymentInterface::STATE_FAILED);
+        $this->payment->expects(self::once())->method('getOrder')->willReturn($this->order);
 
-        $payment->expects(self::once())->method('getOrder')->willReturn($order);
+        $this->order->expects(self::once())->method('getTokenValue')->willReturn('qwerty');
 
-        $order->expects(self::once())->method('getTokenValue')->willReturn('qwerty');
-
-        $resolveNextRouteRequest->expects(self::once())
+        $this->resolveNextRouteRequest->expects(self::once())
             ->method('setRouteName')
             ->with('sylius_shop_order_show');
 
-        $resolveNextRouteRequest->expects(self::once())
+        $this->resolveNextRouteRequest->expects(self::once())
             ->method('setRouteParameters')
             ->with(['tokenValue' => 'qwerty']);
 
-        $this->resolveNextRouteAction->execute($resolveNextRouteRequest);
+        $this->resolveNextRouteAction->execute($this->resolveNextRouteRequest);
     }
 
     public function testResolvesNextRouteForProcessingPayment(): void
     {
-        /** @var ResolveNextRoute&MockObject $resolveNextRouteRequest */
-        $resolveNextRouteRequest = $this->createMock(ResolveNextRoute::class);
-        /** @var PaymentInterface&MockObject $payment */
-        $payment = $this->createMock(PaymentInterface::class);
-        /** @var OrderInterface&MockObject $order */
-        $order = $this->createMock(OrderInterface::class);
+        $this->resolveNextRouteRequest->expects(self::once())
+            ->method('getFirstModel')
+            ->willReturn($this->payment);
 
-        $resolveNextRouteRequest->expects(self::once())->method('getFirstModel')->willReturn($payment);
+        $this->payment->method('getState')->willReturn(PaymentInterface::STATE_PROCESSING);
 
-        $payment->method('getState')->willReturn(PaymentInterface::STATE_PROCESSING);
+        $this->payment->expects(self::once())->method('getOrder')->willReturn($this->order);
 
-        $payment->expects(self::once())->method('getOrder')->willReturn($order);
+        $this->order->expects(self::once())->method('getTokenValue')->willReturn('qwerty');
 
-        $order->expects(self::once())->method('getTokenValue')->willReturn('qwerty');
-
-        $resolveNextRouteRequest->expects(self::once())
+        $this->resolveNextRouteRequest->expects(self::once())
             ->method('setRouteName')
             ->with('sylius_shop_order_show');
 
-        $resolveNextRouteRequest->expects(self::once())
+        $this->resolveNextRouteRequest->expects(self::once())
             ->method('setRouteParameters')
             ->with(['tokenValue' => 'qwerty']);
 
-        $this->resolveNextRouteAction->execute($resolveNextRouteRequest);
+        $this->resolveNextRouteAction->execute($this->resolveNextRouteRequest);
     }
 }
