@@ -23,11 +23,12 @@ final class GatewayConfigTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->gatewayConfig = new GatewayConfig();
     }
 
     public function testImplementsPayumGatewayConfigInterface(): void
     {
-        $this->assertInstanceOf(GatewayConfigInterface::class, $this->gatewayConfig);
+        self::assertInstanceOf(GatewayConfigInterface::class, $this->gatewayConfig);
     }
 }

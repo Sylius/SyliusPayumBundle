@@ -25,19 +25,24 @@ final class ResolveNextRouteActionTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->resolveNextRouteAction = new ResolveNextRouteAction();
     }
 
     public function testAPayumAction(): void
     {
-        $this->assertInstanceOf(ActionInterface::class, $this->resolveNextRouteAction);
+        self::assertInstanceOf(ActionInterface::class, $this->resolveNextRouteAction);
     }
 
     public function testResolvesNextRoute(): void
     {
-        /** @var ResolveNextRoute|MockObject $resolveNextRouteRequestMock */
-        $resolveNextRouteRequestMock = $this->createMock(ResolveNextRoute::class);
-        $resolveNextRouteRequestMock->expects($this->once())->method('setRouteName')->with('sylius_shop_order_thank_you');
-        $this->resolveNextRouteAction->execute($resolveNextRouteRequestMock);
+        /** @var ResolveNextRoute&MockObject $resolveNextRouteRequest */
+        $resolveNextRouteRequest = $this->createMock(ResolveNextRoute::class);
+
+        $resolveNextRouteRequest->expects(self::once())
+            ->method('setRouteName')
+            ->with('sylius_shop_order_thank_you');
+
+        $this->resolveNextRouteAction->execute($resolveNextRouteRequest);
     }
 }

@@ -26,18 +26,22 @@ final class GetStatusFactoryTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->getStatusFactory = new GetStatusFactory();
     }
 
     public function testGetStatusFactory(): void
     {
-        $this->assertInstanceOf(GetStatusFactoryInterface::class, $this->getStatusFactory);
+        self::assertInstanceOf(GetStatusFactoryInterface::class, $this->getStatusFactory);
     }
 
     public function testCreatesGetStatusRequest(): void
     {
-        /** @var TokenInterface|MockObject $tokenMock */
-        $tokenMock = $this->createMock(TokenInterface::class);
-        $this->getStatusFactory->expects($this->once())->method('createNewWithModel')->with($tokenMock)->shouldBeLike(new GetStatus($tokenMock));
+        /** @var TokenInterface&MockObject $token */
+        $token = $this->createMock(TokenInterface::class);
+
+        $result = $this->getStatusFactory->createNewWithModel($token);
+
+        self::assertEquals(new GetStatus($token), $result);
     }
 }

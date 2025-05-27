@@ -24,30 +24,44 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class PaymentDescriptionProviderTest extends TestCase
 {
-    /** @var TranslatorInterface|MockObject */
-    private MockObject $translatorMock;
+    private MockObject&TranslatorInterface $translator;
 
     private PaymentDescriptionProvider $paymentDescriptionProvider;
 
     protected function setUp(): void
     {
-        $this->translatorMock = $this->createMock(TranslatorInterface::class);
-        $this->translatorMock->expects($this->once())->method('trans')->with('sylius.payum_action.payment.description', [
-            '%items%' => 2,
-            '%total%' => 100.00,
-        ])->willReturn('Payment contains 2 items for a total of 100');
-        $this->paymentDescriptionProvider = new PaymentDescriptionProvider($this->translatorMock);
+        parent::setUp();
+        $this->translator = $this->createMock(TranslatorInterface::class);
+        $this->translator->expects(self::once())
+            ->method('trans')
+            ->with(
+                'sylius.payum_action.payment.description',
+                [
+                '%items%' => 2,
+                '%total%' => 100.00,
+                ],
+            )->willReturn('Payment contains 2 items for a total of 100');
+        $this->paymentDescriptionProvider = new PaymentDescriptionProvider($this->translator);
     }
 
     public function testGenerateADescriptionString(): void
     {
-        /** @var PaymentInterface|MockObject $paymentMock */
-        $paymentMock = $this->createMock(PaymentInterface::class);
-        /** @var OrderInterface|MockObject $orderMock */
-        $orderMock = $this->createMock(OrderInterface::class);
-        $orderMock->expects($this->once())->method('getItems')->willReturn(new ArrayCollection([new OrderItem(), new OrderItem()]));
-        $paymentMock->expects($this->once())->method('getOrder')->willReturn($orderMock);
-        $paymentMock->expects($this->once())->method('getAmount')->willReturn(10000);
-        $this->assertSame('Payment contains 2 items for a total of 100', $this->paymentDescriptionProvider->getPaymentDescription($paymentMock));
+        /** @var PaymentInterface&MockObject $payment */
+        $payment = $this->createMock(PaymentInterface::class);
+        /** @var OrderInterface&MockObject $order */
+        $order = $this->createMock(OrderInterface::class);
+
+        $order->expects(self::once())
+            ->method('getItems')
+            ->willReturn(new ArrayCollection([new OrderItem(), new OrderItem()]));
+
+        $payment->expects(self::once())->method('getOrder')->willReturn($order);
+
+        $payment->expects(self::once())->method('getAmount')->willReturn(10000);
+
+        self::assertSame(
+            'Payment contains 2 items for a total of 100',
+            $this->paymentDescriptionProvider->getPaymentDescription($payment),
+        );
     }
 }

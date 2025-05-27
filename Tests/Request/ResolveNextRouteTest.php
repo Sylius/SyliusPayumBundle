@@ -21,43 +21,43 @@ use Sylius\Bundle\PayumBundle\Request\ResolveNextRouteInterface;
 
 final class ResolveNextRouteTest extends TestCase
 {
-    /** @var TokenInterface|MockObject */
-    private MockObject $tokenMock;
+    private MockObject&TokenInterface $token;
 
     private ResolveNextRoute $resolveNextRoute;
 
     protected function setUp(): void
     {
-        $this->tokenMock = $this->createMock(TokenInterface::class);
-        $this->resolveNextRoute = new ResolveNextRoute($this->tokenMock);
+        parent::setUp();
+        $this->token = $this->createMock(TokenInterface::class);
+        $this->resolveNextRoute = new ResolveNextRoute($this->token);
     }
 
     public function testResolveNextRouteRequest(): void
     {
-        $this->assertInstanceOf(ResolveNextRouteInterface::class, $this->resolveNextRoute);
+        self::assertInstanceOf(ResolveNextRouteInterface::class, $this->resolveNextRoute);
     }
 
     public function testHasNextRouteName(): void
     {
         $this->resolveNextRoute->setRouteName('route_name');
 
-        $this->assertSame('route_name', $this->resolveNextRoute->getRouteName());
+        self::assertSame('route_name', $this->resolveNextRoute->getRouteName());
     }
 
     public function testHasNextRouteParameters(): void
     {
         $this->resolveNextRoute->setRouteParameters(['id' => 1]);
 
-        $this->assertSame(['id' => 1], $this->resolveNextRoute->getRouteParameters());
+        self::assertSame(['id' => 1], $this->resolveNextRoute->getRouteParameters());
     }
 
     public function testDoesNotHaveRouteNameByDefault(): void
     {
-        $this->assertNull($this->resolveNextRoute->getRouteName());
+        self::assertNull($this->resolveNextRoute->getRouteName());
     }
 
     public function testDoesNotHaveRouteParametersByDefault(): void
     {
-        $this->assertSame([], $this->resolveNextRoute->getRouteParameters());
+        self::assertSame([], $this->resolveNextRoute->getRouteParameters());
     }
 }

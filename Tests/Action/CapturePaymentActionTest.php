@@ -26,41 +26,50 @@ use Sylius\Component\Core\Model\PaymentInterface;
 
 final class CapturePaymentActionTest extends TestCase
 {
-    /** @var PaymentDescriptionProviderInterface|MockObject */
-    private MockObject $paymentDescriptionProviderMock;
+    private MockObject&PaymentDescriptionProviderInterface $paymentDescriptionProvider;
 
     private CapturePaymentAction $capturePaymentAction;
 
     protected function setUp(): void
     {
-        $this->paymentDescriptionProviderMock = $this->createMock(PaymentDescriptionProviderInterface::class);
-        $this->capturePaymentAction = new CapturePaymentAction($this->paymentDescriptionProviderMock);
+        parent::setUp();
+        $this->paymentDescriptionProvider = $this->createMock(PaymentDescriptionProviderInterface::class);
+        $this->capturePaymentAction = new CapturePaymentAction($this->paymentDescriptionProvider);
     }
 
     public function testThrowExceptionWhenUnsupportedRequest(): void
     {
-        /** @var Capture|MockObject $captureMock */
-        $captureMock = $this->createMock(Capture::class);
-        $this->expectException(RequestNotSupportedException::class);
-        $this->capturePaymentAction->execute($captureMock);
+        /** @var Capture&MockObject $capture */
+        $capture = $this->createMock(Capture::class);
+
+        self::expectException(RequestNotSupportedException::class);
+
+        $this->capturePaymentAction->execute($capture);
     }
 
     public function testPerformBasicCapture(): void
     {
-        /** @var GatewayInterface|MockObject $gatewayMock */
-        $gatewayMock = $this->createMock(GatewayInterface::class);
-        /** @var Capture|MockObject $captureMock */
-        $captureMock = $this->createMock(Capture::class);
-        /** @var PaymentInterface|MockObject $paymentMock */
-        $paymentMock = $this->createMock(PaymentInterface::class);
-        /** @var OrderInterface|MockObject $orderMock */
-        $orderMock = $this->createMock(OrderInterface::class);
-        $this->capturePaymentAction->setGateway($gatewayMock);
-        $paymentMock->expects($this->once())->method('getOrder')->willReturn($orderMock);
-        $paymentMock->expects($this->once())->method('getDetails')->willReturn([]);
-        $captureMock->expects($this->once())->method('getModel')->willReturn($paymentMock);
-        $paymentMock->expects($this->once())->method('setDetails')->with([]);
-        $captureMock->expects($this->once())->method('setModel')->with(new ArrayObject());
-        $this->capturePaymentAction->execute($captureMock);
+        /** @var GatewayInterface&MockObject $gateway */
+        $gateway = $this->createMock(GatewayInterface::class);
+        /** @var Capture&MockObject $capture */
+        $capture = $this->createMock(Capture::class);
+        /** @var PaymentInterface&MockObject $payment */
+        $payment = $this->createMock(PaymentInterface::class);
+        /** @var OrderInterface&MockObject $order */
+        $order = $this->createMock(OrderInterface::class);
+
+        $this->capturePaymentAction->setGateway($gateway);
+
+        $payment->expects(self::once())->method('getOrder')->willReturn($order);
+
+        $payment->expects(self::once())->method('getDetails')->willReturn([]);
+
+        $capture->expects($this->any())->method('getModel')->willReturn($payment);
+
+        $payment->expects(self::once())->method('setDetails')->with([]);
+
+        $capture->expects(self::once())->method('setModel')->with(new ArrayObject());
+
+        $this->capturePaymentAction->execute($capture);
     }
 }

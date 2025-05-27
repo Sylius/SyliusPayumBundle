@@ -26,18 +26,22 @@ final class ResolveNextRouteFactoryTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->resolveNextRouteFactory = new ResolveNextRouteFactory();
     }
 
     public function testResolveNextRouteFactory(): void
     {
-        $this->assertInstanceOf(ResolveNextRouteFactoryInterface::class, $this->resolveNextRouteFactory);
+        self::assertInstanceOf(ResolveNextRouteFactoryInterface::class, $this->resolveNextRouteFactory);
     }
 
     public function testCreatesResolveNextRouteRequest(): void
     {
-        /** @var TokenInterface|MockObject $tokenMock */
-        $tokenMock = $this->createMock(TokenInterface::class);
-        $this->resolveNextRouteFactory->expects($this->once())->method('createNewWithModel')->with($tokenMock)->shouldBeLike(new ResolveNextRoute($tokenMock));
+        /** @var TokenInterface&MockObject $token */
+        $token = $this->createMock(TokenInterface::class);
+
+        $result = $this->resolveNextRouteFactory->createNewWithModel($token);
+
+        self::assertEquals(new ResolveNextRoute($token), $result);
     }
 }

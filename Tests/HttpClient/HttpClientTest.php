@@ -23,29 +23,33 @@ use Sylius\Bundle\PayumBundle\HttpClient\HttpClient;
 
 final class HttpClientTest extends TestCase
 {
-    /** @var ClientInterface|MockObject */
-    private MockObject $clientMock;
+    private ClientInterface&MockObject $client;
 
     private HttpClient $httpClient;
 
     protected function setUp(): void
     {
-        $this->clientMock = $this->createMock(ClientInterface::class);
-        $this->httpClient = new HttpClient($this->clientMock);
+        parent::setUp();
+        $this->client = $this->createMock(ClientInterface::class);
+        $this->httpClient = new HttpClient($this->client);
     }
 
     public function testImplementsHttpClientInterface(): void
     {
-        $this->assertInstanceOf(HttpClientInterface::class, $this->httpClient);
+        self::assertInstanceOf(HttpClientInterface::class, $this->httpClient);
     }
 
     public function testSendsARequest(): void
     {
-        /** @var RequestInterface|MockObject $requestMock */
-        $requestMock = $this->createMock(RequestInterface::class);
-        /** @var ResponseInterface|MockObject $responseMock */
-        $responseMock = $this->createMock(ResponseInterface::class);
-        $this->clientMock->expects($this->once())->method('sendRequest')->with($requestMock)->willReturn($responseMock);
-        $this->assertSame($responseMock, $this->httpClient->send($requestMock));
+        /** @var RequestInterface&MockObject $request */
+        $request = $this->createMock(RequestInterface::class);
+        /** @var ResponseInterface&MockObject $response */
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->client->expects(self::once())
+            ->method('sendRequest')
+            ->with($request)->willReturn($response);
+
+        self::assertSame($response, $this->httpClient->send($request));
     }
 }
