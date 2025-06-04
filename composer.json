@@ -64,7 +64,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Sylius\\Bundle\\PayumBundle\\": "Tests/"
+            "Tests\\Sylius\\Bundle\\PayumBundle\\": "tests/"
         }
     },
     "repositories": [
